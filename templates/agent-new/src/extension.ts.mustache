@@ -1,0 +1,47 @@
+import * as vscode from 'vscode';
+
+// Use this prompt to initiate some context with the model when the user activates this agent
+const prompt = "I don't have any special instructions right now.  What should I share to get started?";
+const agentName = '{{name}}';
+
+// This method is called when the VS Code extensions are activated
+// this can be configured in package.json under "activationEvents"
+export function activate(context: vscode.ExtensionContext) {
+	//show a toast message when the extension is loaded
+	vscode.window.showInformationMessage('{{name}} loaded!');
+
+	// Your the create handler will be called the very first time the @agent is invoked with copilot
+	// and Copilot needs to load the agent.
+	const agent = vscode.chat.createChatAgent(agentName, async (request: vscode.ChatAgentRequest,
+		context: vscode.ChatAgentContext,
+		progress: vscode.Progress<vscode.ChatAgentProgress>,
+		token: vscode.CancellationToken) => {
+
+		//get access to chat so that we can interact with the model
+		const access = await vscode.chat.requestChatAccess('copilot');
+
+		//send a "system" prompt to the model  -- the user won't see this
+		const promptRequest = access.makeRequest([
+			{ role: vscode.ChatMessageRole.System, content: prompt },
+		], {}, token);
+
+		//the response is a readable stream of messages, so we just
+		//report them as they come in so they are displayed in the chat UI
+		for await (const chunk of promptRequest.response) {
+			if (token.isCancellationRequested) {
+				break;
+			}
+			progress.report({ content: chunk });
+		}
+		return {};
+	});
+
+	agent.description = "{{description}}";
+	agent.fullName = '{{name}} Copilot Chat Agent';
+	agent.iconPath = new vscode.ThemeIcon('smiley');
+
+	context.subscriptions.push(agent);
+}
+
+// This method is called when your extension is deactivated
+export function deactivate() { }

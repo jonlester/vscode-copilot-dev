@@ -1,0 +1,87 @@
+{
+	"root": true,
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module"
+	},
+	"ignorePatterns": ["templates/**, **/test-output/**"],
+	"plugins": ["@typescript-eslint", "jsdoc", "import", "header"],
+	"rules": {
+		"indent": [
+			"error",
+			"tab",
+			{
+				"ignoredNodes": [
+					"SwitchCase",
+					"ClassDeclaration",
+					"TemplateLiteral *" // Conflicts with tsfmt
+				]
+			}
+		],
+		"constructor-super": "error",
+		"curly": "error",
+		"eqeqeq": "error",
+		"prefer-const": [
+			"error",
+			{
+				"destructuring": "all"
+			}
+		],
+		"no-buffer-constructor": "error",
+		"no-caller": "error",
+		"no-case-declarations": "error",
+		"no-debugger": "error",
+		"no-duplicate-case": "error",
+		"no-duplicate-imports": "error",
+		"no-eval": "error",
+		"no-async-promise-executor": "error",
+		"no-extra-semi": "error",
+		"no-new-wrappers": "error",
+		"no-redeclare": "off",
+		"no-sparse-arrays": "error",
+		"no-throw-literal": "error",
+		"no-unsafe-finally": "error",
+		"no-unused-labels": "error",
+		"no-restricted-globals": [
+			"error",
+			"name",
+			"length",
+			"event",
+			"closed",
+			"external",
+			"status",
+			"origin",
+			"orientation",
+			"context"
+		], // non-complete list of globals that are easy to access unintentionally
+		"no-var": "error",
+		"jsdoc/no-types": "error",
+		"semi": "off",
+		"@typescript-eslint/semi": "error",
+		"@typescript-eslint/member-delimiter-style": "error",
+		"@typescript-eslint/naming-convention": [
+			"error",
+			{
+				"selector": "class",
+				"format": ["PascalCase"]
+			}
+		],
+		"header/header": [
+			"error",
+			"block",
+			[
+				"------------------------------------------------------------*",
+				" *  Copyright (c) Microsoft Corporation. All rights reserved. *",
+				" *------------------------------------------------------------"
+			]
+		]
+	},
+	"settings": {
+		"import/resolver": {
+			"node": {
+				"extensions": [".ts", ".tsx"]
+			}
+		}
+	}
+}
