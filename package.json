@@ -39,7 +39,8 @@
   },
   "files": [
     "dist/*",
-    "bin/*"
+    "bin/*",
+    "templates/*"
   ],
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",
