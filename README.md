@@ -2,6 +2,10 @@
 
 This project provides development tools for creating GitHub Copilot extensions for Visual Studio Code.
 
+
+https://github.com/jonlester/vscode-copilot-dev/assets/1609107/ee2f7541-7e3f-436d-b0eb-956fd697947c
+
+
 ## Usage
 
 From a command prompt or VS Code terminal window, create a new empty directory to hold your project.  For example:
