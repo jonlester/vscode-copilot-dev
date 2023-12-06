@@ -12,23 +12,10 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--enable-proposed-api=undefined_publisher.new-agent"
+        "--enable-proposed-api={{publisher}}.{{name}}"
       ],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
-      "preLaunchTask": "npm: watch"
-    },
-    {
-      "name": "Run Extension Tests",
-      "type": "extensionHost",
-      "request": "launch",
-      "runtimeExecutable": "${execPath}",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test",
-        "--enable-proposed-api=undefined_publisher.new-agent"
-      ],
-      "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
-      "preLaunchTask": "npm: watch"
+      "preLaunchTask": "${defaultBuildTask}"
     }
   ]
 }

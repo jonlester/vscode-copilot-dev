@@ -13,7 +13,7 @@ const summary =
 
 function mergeParsedArguments(args: any[], passedOptions?: InitOptions): InitOptions {
 	//set defaults
-	let result: any = { silent: false, git: true };
+	let result: any = { silent: false, git: true, publisher: 'undefined_publisher' };
 	if (!args || args.length === 0) {
 		return result;
 	}
@@ -71,10 +71,10 @@ export async function init(initOptions?: InitOptions): Promise<void> {
 				mergedOptions.name, path.basename(process.cwd()));
 
 			mergedOptions.displayName = await validateAndPrompt('Enter a "friendly" name for your agent.',
-				mergedOptions.displayName, `${mergedOptions.name} chat agent`);
+				mergedOptions.displayName, `Copilot agent: @${mergedOptions.name}`);
 
 			mergedOptions.description = await validateAndPrompt('Enter a brief description of what it does for your users.',
-				mergedOptions.description, `${mergedOptions.name} chat agent`);
+				mergedOptions.description, `${mergedOptions.displayName} - A GitHub Copilot chat agent for VS Code`);
 
 			await newAgentCommand.run(mergedOptions);
 		});

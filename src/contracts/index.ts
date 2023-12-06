@@ -11,5 +11,6 @@ export type InitOptions = {
 	name: string;
 	displayName?: string;
 	description?: string;
+	publisher?: string;
 	git?: boolean;
 };

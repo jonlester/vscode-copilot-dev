@@ -8,5 +8,5 @@
   },
   "plugins": ["@typescript-eslint"],
   "rules": {},
-  "ignorePatterns": ["node_modules/", "dist/", "**/vscode.proposed.*.d.ts"]
+  "ignorePatterns": ["node_modules/", "out/", "**/vscode.proposed.*.d.ts"]
 }

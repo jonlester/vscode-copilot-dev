@@ -3,12 +3,14 @@ import * as vscode from 'vscode';
 // Use this prompt to initiate some context with the model when the user activates this agent
 const prompt = "I don't have any special instructions right now.  What should I share to get started?";
 const agentName = '{{name}}';
+const description = '{{description}}';
+const fullName = '{{displayName}}';
 
 // This method is called when the VS Code extensions are activated
 // this can be configured in package.json under "activationEvents"
 export function activate(context: vscode.ExtensionContext) {
 	//show a toast message when the extension is loaded
-	vscode.window.showInformationMessage('{{name}} loaded!');
+	vscode.window.showInformationMessage(`Loaded ${fullName}`);
 
 	// Your the create handler will be called the very first time the @agent is invoked with copilot
 	// and Copilot needs to load the agent.
@@ -36,8 +38,8 @@ export function activate(context: vscode.ExtensionContext) {
 		return {};
 	});
 
-	agent.description = "{{description}}";
-	agent.fullName = '{{name}} Copilot Chat Agent';
+	agent.description = description;
+	agent.fullName = fullName;
 	agent.iconPath = new vscode.ThemeIcon('smiley');
 
 	context.subscriptions.push(agent);
