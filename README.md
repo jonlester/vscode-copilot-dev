@@ -38,7 +38,7 @@ You can start customizing your chat agent by adding your code to the generated `
 > **Tip:** Take a look at this [chat agent sample](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-agent-sample) to help get you started.
 
 ## Feedback
-For any and all questions, issues, or just general feedback, please open an [issue](./issues/new)
+For any and all questions, issues, or just general feedback, please open an [issue](https://github.com/jonlester/vscode-copilot-dev/issues/new/choose)
 
 ## License
 
