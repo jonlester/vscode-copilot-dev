@@ -13,7 +13,7 @@ describe("init new agent command", () => {
     name: "new-agent",
     description: "new agent description",
     displayName: "new agent display name",
-    silent: true
+    silent: true,
   };
 
   beforeAll(() => {

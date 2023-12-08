@@ -11,9 +11,16 @@ import { InitOptions } from '../contracts';
 const summary =
 	'This package will scaffold a new GitHub Copilot chat agent typescript extension for VS Code usiing TypeScript.';
 
-function mergeParsedArguments(args: any[], passedOptions?: InitOptions): InitOptions {
+function mergeParsedArguments(
+	args: any[],
+	passedOptions?: InitOptions,
+): InitOptions {
 	//set defaults
-	let result: any = { silent: false, git: true, publisher: 'undefined_publisher' };
+	let result: any = {
+		silent: false,
+		git: true,
+		publisher: 'undefined_publisher',
+	};
 	if (!args || args.length === 0) {
 		return result;
 	}
@@ -28,8 +35,24 @@ function mergeParsedArguments(args: any[], passedOptions?: InitOptions): InitOpt
 	}
 	return result as InitOptions;
 }
+/**
+ * Returns the current time in the format "hours:minutes:seconds".
+ *
+ * @returns The current time.
+ */
+function getCurrentTime() {
+	const date = new Date();
+	const hours = date.getHours();
+	const minutes = date.getMinutes();
+	const seconds = date.getSeconds();
 
-async function validateAndPrompt(prompt: string, currentValue?: string, defaultValue?: string): Promise<string> {
+	return `${hours}:${minutes}:${seconds}`;
+}
+async function validateAndPrompt(
+	prompt: string,
+	currentValue?: string,
+	defaultValue?: string,
+): Promise<string> {
 	const validator = (input?: string): boolean => {
 		if (!input || input.trim().length === 0) {
 			return false;
@@ -45,8 +68,7 @@ async function validateAndPrompt(prompt: string, currentValue?: string, defaultV
 				return validator(input) ? true : 'value cannot be empty';
 			},
 		});
-	}
-	else {
+	} else {
 		return Promise.resolve(currentValue!);
 	}
 }
@@ -57,36 +79,62 @@ export async function init(initOptions?: InitOptions): Promise<void> {
 	program
 		.summary(summary)
 		.argument('[name]', 'new agent name')
-		.option('--no-git', 'don\'t initialize a local git repository')
+		.option('--no-git', "don't initialize a local git repository")
 		.action(async (...args: any[]) => {
 			const mergedOptions = mergeParsedArguments(args);
-			if(!mergedOptions.silent && !(await confirm({
-				message: chalk.blue(`${summary}\nDo you want to continue?`),
-				default: true,
-			}))) { return; }
+			if (
+				!mergedOptions.silent &&
+				!(await confirm({
+					message: chalk.blue(`${summary}\nDo you want to continue?`),
+					default: true,
+				}))
+			) {
+				return;
+			}
 
 			//TODO: merge prompts into Listr so that the tasks can be more interactive
 			//fix this to handle silent mode
-			mergedOptions.name = await validateAndPrompt('What would you like to name your new Copilot chat agent? Don\'t use spaces or special characters.',
-				mergedOptions.name, path.basename(process.cwd()));
+			mergedOptions.name = await validateAndPrompt(
+				"What would you like to name your new Copilot chat agent? Don't use spaces or special characters.",
+				mergedOptions.name,
+				path.basename(process.cwd()),
+			);
 
-			mergedOptions.displayName = await validateAndPrompt('Enter a "friendly" name for your agent.',
-				mergedOptions.displayName, `Copilot agent: @${mergedOptions.name}`);
+			mergedOptions.displayName = await validateAndPrompt(
+				'Enter a "friendly" name for your agent.',
+				mergedOptions.displayName,
+				`Copilot agent: @${mergedOptions.name}`,
+			);
 
-			mergedOptions.description = await validateAndPrompt('Enter a brief description of what it does for your users.',
-				mergedOptions.description, `${mergedOptions.displayName} - A GitHub Copilot chat agent for VS Code`);
+			mergedOptions.description = await validateAndPrompt(
+				'Enter a brief description of what it does for your users.',
+				mergedOptions.description,
+				`${mergedOptions.displayName} - A GitHub Copilot chat agent for VS Code`,
+			);
+
+			mergedOptions.git = await confirm({
+				message: 'Initialize a local git repository?',
+				default: true,
+			});
 
 			await newAgentCommand.run(mergedOptions);
 		});
 
 	console.clear();
-	await program.parseAsync()
+	await program
+		.parseAsync()
 		.then((command) => {
-			console.log(chalk.green.bold('\nYour new chat agent project is now ready. Happy coding!\n'));
+			console.log(
+				chalk.green.bold(
+					'\nYour new chat agent project is now ready. Happy coding!\n',
+				),
+			);
 		})
 		.catch((reason) => {
-			console.log(chalk.red.bold('\nInitialization Failed. Check the output above for details.'));
+			console.log(
+				chalk.red.bold(
+					'\nInitialization Failed. Check the output above for details.',
+				),
+			);
 		});
 }
-
-

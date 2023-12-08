@@ -23,7 +23,8 @@ export async function packageJsonPath(): Promise<string> {
 
 	let currentDir = path.dirname(fileURLToPath(import.meta.url));
 
-	while (currentDir !== path.dirname(currentDir)) { // Stop when reaching root directory
+	while (currentDir !== path.dirname(currentDir)) {
+		// Stop when reaching root directory
 		const packageJsonPath = path.join(currentDir, 'package.json');
 		try {
 			await fs.promises.access(packageJsonPath);
@@ -34,7 +35,9 @@ export async function packageJsonPath(): Promise<string> {
 		}
 	}
 
-	throw new Error(`Could not find package.json in ${currentDir} or any parent directory`);
+	throw new Error(
+		`Could not find package.json in ${currentDir} or any parent directory`,
+	);
 }
 
 export async function renderTemplates(

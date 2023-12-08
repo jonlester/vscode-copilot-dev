@@ -14,78 +14,94 @@ class NewAgentCommand implements ICliCommand {
 		//TODO: allow the folder to be specified
 		const folder = './';
 		const projectFolder = path.resolve(process.cwd(), folder);
-		const tasks = new Listr(
-			[
-				{
-					title: 'Preflight checks',
-					task: () => {
-						return new Listr(
-							[
-								{
-									title: `Checking name "${options.name}"`,
-									task: () => validatePackageName(options.name),
-								},
-								{
-									title: `Checking folder "${projectFolder}"`,
-									task: async () => await validateFolder(projectFolder)
-										.catch((error) => {
+		const tasks = new Listr([
+			{
+				title: 'Preflight checks',
+				task: () => {
+					return new Listr(
+						[
+							{
+								title: `Checking name "${options.name}"`,
+								task: () => validatePackageName(options.name),
+							},
+							{
+								title: `Checking folder "${projectFolder}"`,
+								task: async () =>
+									await validateFolder(projectFolder).catch(
+										(error) => {
 											throw new Error(
 												`The specified folder is not empty.  A new agent can only be created in an empty folder.`,
 											);
 										},
-										),
-								},
-							],
-							{ concurrent: false },
-						);
-					},
+									),
+							},
+						],
+						{ concurrent: false },
+					);
 				},
-				{
-					title: 'Generate package files',
-					task: async (ctx, task): Promise<void> => {
-						const onData = (data: string) => {
-							task.output = data;
-						};
-						return fsHelper.renderTemplates(
-							'agent-new',
-							projectFolder,
-							options,
-							(msg: string) => { task.output = msg; },
-						);
-					},
-					rendererOptions: { persistentOutput: true }
+			},
+			{
+				title: 'Generate package files',
+				task: async (ctx, task): Promise<void> => {
+					const onData = (data: string) => {
+						task.output = data;
+					};
+					return fsHelper.renderTemplates(
+						'agent-new',
+						projectFolder,
+						options,
+						(msg: string) => {
+							task.output = msg;
+						},
+					);
 				},
-				{
-					title: 'Install npm packages',
-					task: async (ctx, task) => {
-						return wrappedExec('npm install --verbose', (msg: string) => { task.output = msg; });
-					},
-					rendererOptions: { persistentOutput: true }
+				rendererOptions: { persistentOutput: true },
+			},
+			{
+				title: 'Install npm packages',
+				task: async (ctx, task) => {
+					return wrappedExec(
+						'npm install --verbose',
+						(msg: string) => {
+							task.output = msg;
+						},
+					);
 				},
-				{
-					title: 'Initialize Git',
-					skip: () => !options.git,
-					task: async (ctx, task) => {
-						return wrappedExec('git init', (msg: string) => { task.output = msg; });
-					},
-					rendererOptions: { persistentOutput: true }
+				rendererOptions: { persistentOutput: true },
+			},
+			{
+				title: 'Initialize Git',
+				skip: () => !options.git,
+				task: async (ctx, task) => {
+					return wrappedExec('git init', (msg: string) => {
+						task.output = msg;
+					});
 				},
-				{
-					title: 'Install vscode-dts proposed API types',
-					task: async (ctx, task) => {
-						return wrappedExec('npx --yes vscode-dts@latest dev -f', (msg: string) => { task.output = msg; });
-					},
-					rendererOptions: { persistentOutput: true }
+				rendererOptions: { persistentOutput: true },
+			},
+			{
+				title: 'Install vscode-dts proposed API types',
+				task: async (ctx, task) => {
+					return wrappedExec(
+						'npx --yes vscode-dts@latest dev -f',
+						(msg: string) => {
+							task.output = msg;
+						},
+						path.join(process.cwd(), 'src'),
+					);
 				},
-				{
-					title: 'Compile typeScript',
-					task: async (ctx, task) => {
-						return wrappedExec('npm run compile', (msg: string) => { task.output = msg; });
-					},
-					rendererOptions: { persistentOutput: true }
-				}
-			],
-		);
+				rendererOptions: { persistentOutput: true },
+			},
+			{
+				title: 'Compile typeScript',
+				task: async (ctx, task) => {
+					return wrappedExec('npm run compile', (msg: string) => {
+						task.output = msg;
+					});
+				},
+				rendererOptions: { persistentOutput: true },
+			},
+		]);
 		return tasks.run();
 	}
 }
@@ -108,10 +124,14 @@ async function validateFolder(folderPath: string): Promise<void> {
 	return Promise.resolve();
 }
 
-async function wrappedExec(cmd: string, callback: EventCallback): Promise<void> {
+async function wrappedExec(
+	cmd: string,
+	callback: EventCallback,
+	cwd?: string,
+): Promise<void> {
 	callback(`Executing: '${cmd}'`);
 	return new Promise((resolve, reject) => {
-		const childProcess = exec(cmd);
+		const childProcess = exec(cmd, { cwd: cwd ?? process.cwd() });
 		childProcess.stdout?.on('data', (data) => {
 			const lines = stripAnsi(data.toString()).split(/\r?\n/);
 			lines.forEach((line) => {
@@ -120,11 +140,11 @@ async function wrappedExec(cmd: string, callback: EventCallback): Promise<void> 
 				}
 			});
 		});
-		childProcess.on("error", (error) => {
+		childProcess.on('error', (error) => {
 			reject(error);
 		});
-		childProcess.on("close", () => {
-			callback("Completed successfully");
+		childProcess.on('close', () => {
+			callback('Completed successfully');
 			resolve();
 		});
 	});

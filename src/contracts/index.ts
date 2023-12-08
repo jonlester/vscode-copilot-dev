@@ -7,7 +7,7 @@ export interface ICliCommand {
 export type EventCallback = (msg: string) => void;
 
 export type InitOptions = {
-    silent: boolean;
+	silent: boolean;
 	name: string;
 	displayName?: string;
 	description?: string;

@@ -1,12 +1,16 @@
 # vscode-copilot-dev
+
 ---
+
 This project provides development tools for creating GitHub Copilot extensions for Visual Studio Code.
 
 ## Scaffold a new Copilot chat agent package:
+
 ![demo](./docs/assets/vscode-copilot.gif)
 
 ## Usage
-From a command prompt or VS Code terminal window, create a new empty directory to hold your project.  For example:
+
+From a command prompt or VS Code terminal window, create a new empty directory to hold your project. For example:
 
 ```
 mkdir myagent
@@ -38,6 +42,7 @@ You can start customizing your chat agent by adding your code to the generated `
 > **Tip:** Take a look at this [chat agent sample](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-agent-sample) to help get you started.
 
 ## Feedback
+
 For any and all questions, issues, or just general feedback, please open an [issue](./issues/new)
 
 ## License
