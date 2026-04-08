@@ -1,5 +1,8 @@
 # vscode-copilot-dev
 
+> [!IMPORTANT]
+> This repo has been archived because there are newer and better options available.  I originally built this to quickly scaffold samples in the very early days of the Chat extension for VS Code.  This repo is probably only useful now as a historical reference (if even that).
+
 ---
 
 This project provides development tools for creating GitHub Copilot extensions for Visual Studio Code.
